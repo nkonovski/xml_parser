@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<catalog>
+	<book>
+		<author>Terry Pratchet</author>
+		<name>The Color of magic</name>
+	</book>
+	<book>
+		<author>George R. R. Martin.</author>
+		<name>A Song of Ice and Fire</name>
+	</book>
+</catalog>

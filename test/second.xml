@@ -1,0 +1,11 @@
+﻿<?xml version="1.0"?>
+<catalog>
+	<book>
+		<author>Исак Азимов</author>
+		<name>Аз роботът</name>
+	</book>
+	<book>
+		<author>Ivan Ivanov</author>
+		<name>Start of spirit</name>
+	</book>
+</catalog>
