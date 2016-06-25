@@ -3,25 +3,25 @@
 //CRUD operations
 class Model(){
 
-    /**
-     * List of field types
-     */
-    const TYPE_INT     = 1;
-    const TYPE_BOOL    = 2;
-    const TYPE_STRING  = 3;
-    const TYPE_FLOAT   = 4;
-    const TYPE_DATE    = 5;
-    const TYPE_HTML    = 6;
-    const TYPE_NOTHING = 7;
-    const TYPE_SQL     = 8;
-
-    /** @var int Object ID */
-    public $id;
-	
 	/**
-     * @var array Contains object definition
-     */
-    public static $definition = array();
+	 * List of field types
+	 */
+	const TYPE_INT     = 1;
+	const TYPE_BOOL    = 2;
+	const TYPE_STRING  = 3;
+	const TYPE_FLOAT   = 4;
+	const TYPE_DATE    = 5;
+	const TYPE_HTML    = 6;
+	const TYPE_NOTHING = 7;
+	const TYPE_SQL     = 8;
+
+	/** @var int Object ID */
+	public $id;
+
+	/**
+	 * @var array Contains object definition
+	 */
+	public static $definition = array();
 
 	/**
 	* Load object
@@ -39,6 +39,28 @@ class Model(){
 		}
 	}
 	
+	/**
+	* get data collection
+	*
+	*@param int $limit
+	*@return array
+	*/
+	public function getList($limit = null){
+
+		$sql_limit = '';
+		if(!empty($limit)){
+			$sql_limit = 'LIMIT '.(int)$limit;
+		}
+
+		$sql = 'SELECT * FROM `'.$this->def['table'].'` '.$sql_limit;
+
+		// get data from db
+		if (!$result = Db::getInstance()->execute($sql) {
+			return false;
+		}
+
+		return $result;
+	}
 	
 	/**
 	*Add new object
@@ -75,12 +97,12 @@ class Model(){
 		if (array_key_exists('date_upd', $this)) {
 			$this->date_upd = date('Y-m-d H:i:s')
 		}
-	
-	    // Database update
-        if (!$result = Db::getInstance()->update($this->def['table'], $this->getFields(), '`'.pSQL($this->def['primary']).'` = '.(int)$this->id)) {
-            return false;
-        }
-		
+
+		// Database update
+		if (!$result = Db::getInstance()->update($this->def['table'], $this->getFields(), '`'.pSQL($this->def['primary']).'` = '.(int)$this->id)) {
+			return false;
+		}
+			
 		return $result;
 	}
 	/**
@@ -95,19 +117,19 @@ class Model(){
 	* Delete record
 	*/
 	public function delete(){
-	
+		//TODO delete object
 	}
 	
 	/**
 	* colect fields and data
 	*/
 	public function getFields()
-    {
+	{
 		$this->validateFields();
 		$fields = $this->formatFields();
 
 		return $fields;
-    }
+	}	
 	
 	/**
 	* validate fields values
@@ -119,15 +141,15 @@ class Model(){
 	/**
 	* format fields values depend of their type
 	*/
-	protected function formatFields()
-    {
-        $fields = array();
-        // Set primary key in fields
-        if (isset($this->id)) {
-            $fields[$this->def['primary']] = $this->id;
-        }
+	protected function formatFields(){
+
+		$fields = array();
+		// Set primary key in fields
+		if (isset($this->id)) {
+			$fields[$this->def['primary']] = $this->id;
+		}
 		foreach ($this->def['fields'] as $field => $data) {
-			// Get field value
+		// Get field value
 			$value = $this->$field;		
 			// Format field value
 			$fields[$field] = Model::formatValue($value, $data['type']));
@@ -137,28 +159,28 @@ class Model(){
 	/**
 	* Format type
 	*/
-	public static function formatValue($value, $type)
-    {
-        switch ($type) {
-            case self::TYPE_INT:
-                return (int)$value;
-            case self::TYPE_BOOL:
-                return (int)$value;
-            case self::TYPE_FLOAT:
-                return (float)str_replace(',', '.', $value);
-            case self::TYPE_DATE:
-                if (!$value) {
-                    return '0000-00-00';
-                }
-                return pSQL($value);
-            case self::TYPE_HTML:
-                return pSQL($value, true);
-            case self::TYPE_NOTHING:
-                return $value;
-            case self::TYPE_STRING:
-            default :
-                return pSQL($value);
-        }
-    }
+	public static function formatValue($value, $type){
+
+		switch ($type) {
+			case self::TYPE_INT:
+				return (int)$value;
+			case self::TYPE_BOOL:
+				return (int)$value;
+			case self::TYPE_FLOAT:
+				return (float)str_replace(',', '.', $value);
+			case self::TYPE_DATE:
+				if (!$value) {
+					return '0000-00-00';
+				}
+			    return pSQL($value);
+			case self::TYPE_HTML:
+				return pSQL($value, true);
+			case self::TYPE_NOTHING:
+				return $value;
+			case self::TYPE_STRING:
+			default :
+				return pSQL($value);
+		}
+	}
 
 }
