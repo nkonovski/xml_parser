@@ -4,6 +4,7 @@ class BookController{
 
 	private $model;
 	private $view = 'BookView'
+	private $template = 'list';
 	private $errors;
 	private $data = array();
 	
@@ -55,6 +56,7 @@ class BookController{
 	private function actionSearch(){
 		$keyword = $_POST['keyword'];
 		$this->data = $this->model->search($keyword);
+		$this->template = 'search';
 		if (empty($this->data)){
 			$this->$errors[] = 'Sorry no results found.';
 		}
@@ -63,12 +65,12 @@ class BookController{
 	/**
 	* print view
 	*/
-	private output($view = 'list'){
+	private output{
 
 		require_once(_ROOT_.'/view/'.$this->view.'php');
 		$view = new $this->view($model, $this->errors);
 
-		switch ($view) {
+		switch ($this->template) {
 			case 'single':
 				$view->displaySingle();
 				break;
@@ -77,7 +79,7 @@ class BookController{
 				break;
 			case 'list':
 			default:
-				$view->displayList($model->getList());
+				$view->displayList($model->getList(10));
 				break;
 		}
 	}
