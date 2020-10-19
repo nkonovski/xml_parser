@@ -1,7 +1,7 @@
 <?php
 
 //CRUD operations
-class Model(){
+class Model {
 
 	/**
 	 * List of field types
@@ -21,15 +21,15 @@ class Model(){
 	/**
 	 * @var array Contains object definition
 	 */
-	public static $definition = array();
+	public static $def = array();
 
 	/**
 	* Load object
 	*/
-	public function __construct($id = null){
+	public function __construct($id = null) {
 		if ($id) {
 			
-			$sql = 'SELECT * FROM `'.$definition['table'].'` WHERE `'.$definition['primary'].'` = '.(int)$this->id;
+			$sql = 'SELECT * FROM `'.$def['table'].'` WHERE `'.$def['primary'].'` = '.(int)$this->id;
 			if (!$fields = Db::getInstance()->execute($sql)) {
 				return false;
 			}
@@ -45,17 +45,17 @@ class Model(){
 	*@param int $limit
 	*@return array
 	*/
-	public function getList($limit = null){
+	public function getList($limit = null) {
 
 		$sql_limit = '';
 		if(!empty($limit)){
 			$sql_limit = 'LIMIT '.(int)$limit;
 		}
 
-		$sql = 'SELECT * FROM `'.$this->def['table'].'` '.$sql_limit;
+		$sql = 'SELECT * FROM `' . static::$def['table'] . '` '.$sql_limit;
 
 		// get data from db
-		if (!$result = Db::getInstance()->execute($sql) {
+		if (!$result = Db::getInstance()->execute($sql)) {
 			return false;
 		}
 
@@ -68,7 +68,7 @@ class Model(){
 	*@param bool $auto_date
 	*@return bool
 	*/
-	public function add($auto_date = true){
+	public function add($auto_date = true) {
 	
 		// Automatically fill dates
 		if ($auto_date && property_exists($this, 'date_add')) {
@@ -79,7 +79,7 @@ class Model(){
 		}
 		
 		// save data into db
-		if (!$result = Db::getInstance()->insert($this->def['table'], $this->getFields())) {
+		if (!$result = Db::getInstance()->insert(static::$def['table'], $this->getFields())) {
 			return false;
 		}
 
@@ -91,15 +91,15 @@ class Model(){
 	*
 	*@return bool
 	*/
-	public function update($auto_date = true){
+	public function update($auto_date = true) {
 	
 		// Automatically fill dates
 		if (array_key_exists('date_upd', $this)) {
-			$this->date_upd = date('Y-m-d H:i:s')
+			$this->date_upd = date('Y-m-d H:i:s');
 		}
 
 		// Database update
-		if (!$result = Db::getInstance()->update($this->def['table'], $this->getFields(), '`'.pSQL($this->def['primary']).'` = '.(int)$this->id)) {
+		if (!$result = Db::getInstance()->update(static::$def['table'], $this->getFields(), '`'.pSQL(static::$def['primary']).'` = '.(int)$this->id)) {
 			return false;
 		}
 			
@@ -108,7 +108,7 @@ class Model(){
 	/**
 	* save object
 	*/
-	public function save(){
+	public function save() {
 	
 		return (int)$this->id > 0 ? $this->update() : $this->add($auto_date);
 	}
@@ -116,7 +116,7 @@ class Model(){
 	/**
 	* Delete record
 	*/
-	public function delete(){
+	public function delete() {
 		//TODO delete object
 	}
 	
@@ -134,32 +134,32 @@ class Model(){
 	/**
 	* validate fields values
 	*/
-	public function validateFields(){
+	public function validateFields() {
 		//TODO validate fields based on type in definition
 	}
 	
 	/**
 	* format fields values depend of their type
 	*/
-	protected function formatFields(){
+	protected function formatFields() {
 
 		$fields = array();
 		// Set primary key in fields
 		if (isset($this->id)) {
-			$fields[$this->def['primary']] = $this->id;
+			$fields[static::$def['primary']] = $this->id;
 		}
-		foreach ($this->def['fields'] as $field => $data) {
+		foreach (static::$def['fields'] as $field => $data) {
 		// Get field value
 			$value = $this->$field;		
 			// Format field value
-			$fields[$field] = Model::formatValue($value, $data['type']));
+			$fields[$field] = Model::formatValue($value, $data['type']);
 		}
 		return $fields;
 	}
 	/**
 	* Format type
 	*/
-	public static function formatValue($value, $type){
+	public static function formatValue($value, $type) {
 
 		switch ($type) {
 			case self::TYPE_INT:

@@ -1,6 +1,6 @@
 <?php
 
-class Book extends  Model{
+class Book extends Model {
 
 	/** @var string book name */
 	public $name;
@@ -12,16 +12,16 @@ class Book extends  Model{
 	public $date_upd;
 
 	 /**
-	 * @see Model::$definition
+	 * @see Model::$def
 	 */
-	public static $definition = array(
+	public static $def = array(
 		'table' => 'book',
 		'primary' => 'id_book',
 		'fields' => array(
 			'name' =>        array('type' => self::TYPE_STRING, 'validate' => 'inGenericName',),
-			'author' =>        array('type' => self::TYPE_INT, 'validate' => 'inGenericName'),
-			'date_add' =>        array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
-			 'date_upd' =>        array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
+			'author' =>      array('type' => self::TYPE_STRING, 'validate' => 'inGenericName'),
+			'date_add' =>    array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
+			'date_upd' =>    array('type' => self::TYPE_DATE, 'validate' => 'isDate'),
 		),
 	);
 
@@ -31,17 +31,17 @@ class Book extends  Model{
 	*@param string $keyword - author name
 	*@return array
 	*/
-	public function search($keyword){
+	public function search($keyword) {
 
 		if (empty($keyword)){
 			return false;
 		}
 
-		$sql = 'SELECT * FROM `'.self::$definition['table'].'` '
+		$sql = 'SELECT * FROM `'.self::$def['table'].'` '
 			.' WHERE `author` LIKE \''.pSQL($keyword).'\' ';
 
 		// get data from db
-		if (!$result = Db::getInstance()->execute($sql) {
+		if (!$result = Db::getInstance()->execute($sql)) {
 			return false;
 		}
 
@@ -85,8 +85,9 @@ class Book extends  Model{
 	*@param string $file - path to XML
 	*@return bool
 	*/
-	protected function parseXml($file){
-	
+	protected function parseXml($file) {
+		ini_set('allow_url_fopen', 'on');
+
 		//load simple xml object
 		$xml = simplexml_load_file($file);
 

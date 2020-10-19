@@ -6,9 +6,9 @@ class Db
 	/** @var array active instance */
 	public static $instance;
 	
-	public $link
+	public $link;
 
-	public static getInstance(){
+	public static function getInstance() {
 	
 		if (!isset(self::$instance)) {
 			// connect to postgre
@@ -22,14 +22,14 @@ class Db
 	/**
 	* create connection
 	*/
-	public function _construct(){
-		$this->link = new PDO("pgsql:dbname=".__DB_NAME__.";host=".__DB_HOST__, __DB_USER__, __DB_PASS__); 
+	public function __construct() {
+		$this->link = new PDO("mysql:dbname=".__DB_NAME__.";host=".__DB_HOST__, __DB_USER__, __DB_PASS__); 
 	}
 
 	/**
 	* Concat update sql
 	*/
-	public function update($table, $fields, $where, $limit = null){
+	public function update($table, $fields, $where, $limit = null) {
 
 		if (!$data) {
 			return true;
@@ -50,14 +50,14 @@ class Db
 			$sql .= ' LIMIT '.(int)$limit;
 		}
 
-		return (bool)$this->link->query($sql)
+		return (bool)$this->link->query($sql);
 
 	}
 
 	/**
 	* Concat insert sql
 	*/
-	public function insert($table, fields){
+	public function insert($table, $fields) {
 
 		$keys = array();
 		$values = array();
@@ -69,7 +69,7 @@ class Db
 		$keys_stringified = implode(', ', $keys);
 		$sql = 'INSERT INTO `'.$table.'` ('.$keys_stringified.') VALUES '.implode(', ', $values);
 
-		return (bool)$this->link->query($sql)
+		return (bool)$this->link->query($sql);
 	
 	}
 

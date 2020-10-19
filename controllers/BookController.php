@@ -1,25 +1,24 @@
 <?php
 
-class BookController{
+class BookController {
 
 	private $model;
-	private $view = 'BookView'
+	private $view = 'BookView';
 	private $template = 'list';
 	private $errors;
 	private $data = array();
 	
 	public $id_object = 0;
 	
-	public function _construct($id){
+	public function __construct($id) {
 	
 		$this->id_object = (int)$id;
 
-		if($this->id_object > 0)
+		if ($this->id_object > 0) {
 			$this->model = new Book($this->id_object);
 		} else {
 			$this->model = new Book();
 		}
-	
 	}
 
 	/**
@@ -29,7 +28,6 @@ class BookController{
 
 		$this->checkActions();
 		$this->output();
-
 	}
 
 	/**
@@ -38,12 +36,12 @@ class BookController{
 	private function checkActions(){
 
 		if(isset($_POST['doScan'])){
-			if ($model->scan()){
-				$this->$errors[] = 'The scan was completed successfully.'
+			if ($this->model->scan()){
+				$this->errors[] = 'The scan was completed successfully.';
 			} else {
-				$this->$errors[] = 'Oops, something goes wrong!'
+				$this->errors[] = 'Oops, something goes wrong!';
 			}
-		} else if isset($_POST['doSearch']) {
+		} else if (isset($_POST['doSearch'])) {
 			$this->actionSearch();
 		}
 
@@ -53,7 +51,7 @@ class BookController{
 	* Get keyword from POST
 	* load proper data
 	*/
-	private function actionSearch(){
+	private function actionSearch() {
 		$keyword = $_POST['keyword'];
 		$this->data = $this->model->search($keyword);
 		$this->template = 'search';
@@ -65,10 +63,10 @@ class BookController{
 	/**
 	* print view
 	*/
-	private output{
+	private function output() {
 
-		require_once(_ROOT_.'/view/'.$this->view.'php');
-		$view = new $this->view($model, $this->errors);
+		require_once(__ROOT__ . '/view/'.$this->view.'.php');
+		$view = new $this->view($this->model, $this->errors);
 
 		switch ($this->template) {
 			case 'single':
@@ -79,7 +77,7 @@ class BookController{
 				break;
 			case 'list':
 			default:
-				$view->displayList($model->getList(10));
+				$view->displayList($this->model->getList(10));
 				break;
 		}
 	}
